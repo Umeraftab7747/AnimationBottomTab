@@ -13,7 +13,6 @@ import {
   Image,
   Dimensions,
   Slider,
-  TextInput,
   Platform,
 } from "react-native";
 
@@ -55,7 +54,6 @@ function MyTabs() {
       if (event.translationY >= -LIMIT_SCREEN / 2) {
         TouchY.value = withTiming(0);
       } else {
-        console.warn(event.translationY);
         TouchY.value = event.translationY;
         TouchY.value = withTiming(-SCREEN_HEIGHT * 0.8);
       }
@@ -65,7 +63,7 @@ function MyTabs() {
   const MoveSlider = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: TouchY.value }],
-      opacity: interpolate(TouchY.value, [1, -150], [1, 0]),
+      opacity: interpolate(TouchY.value, [1, -150], [1, 0]), //change the 2nd 0 value to make Opacity of mini player decrease or incease
     };
   });
 
@@ -97,7 +95,7 @@ function MyTabs() {
 
   const TopTabStyle = useAnimatedStyle(() => {
     return {
-      opacity: interpolate(TouchY.value, [-350, -750], [0, 1]),
+      opacity: interpolate(TouchY.value, [-350, -750], [0.5, 1]),
     };
   });
 
@@ -262,7 +260,7 @@ const styles = StyleSheet.create({
   minPlayer: {
     backgroundColor: "#000",
     width: "100%",
-    height: h("8%"),
+    height: Platform.OS === "ios" ? h("8%") : h("13%"),
     position: "absolute",
     bottom: Platform.OS === "ios" ? 75 : 50,
     left: 0,
@@ -304,7 +302,7 @@ const styles = StyleSheet.create({
   screenPlayer: {
     backgroundColor: "#000",
     width: "100%",
-    height: h("100%"),
+    height: Platform.OS === "ios" ? SCREEN_HEIGHT : h("120%"),
     position: "absolute",
     bottom: -SCREEN_HEIGHT / 1.2,
     left: 0,
@@ -343,7 +341,7 @@ const styles = StyleSheet.create({
     width: "90%",
     height: h("70%"),
     alignItems: "center",
-    paddingTop: h("10%"),
+    paddingTop: h("20%"),
   },
   imges: {
     width: "80%",
