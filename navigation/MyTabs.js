@@ -14,6 +14,7 @@ import {
   Dimensions,
   Slider,
   TextInput,
+  Platform,
 } from "react-native";
 
 import { PanGestureHandler } from "react-native-gesture-handler";
@@ -40,23 +41,31 @@ function MyTabs() {
       context.translateY = TouchY.value;
     },
     onActive: (event, context) => {
-      TouchX.value = event.translationX + context.translateX;
-      TouchY.value = event.translationY + context.translateY;
+      if (event.translationY >= 1) {
+        event.translationY = 0;
+        TouchX.value = event.translationX + context.translateX;
+        TouchY.value = event.translationY + context.translateY;
+      } else {
+        TouchX.value = event.translationX + context.translateX;
+        TouchY.value = event.translationY + context.translateY;
+      }
     },
 
     onEnd: (event) => {
       if (event.translationY >= -LIMIT_SCREEN / 2) {
         TouchY.value = withTiming(0);
       } else {
+        console.warn(event.translationY);
         TouchY.value = event.translationY;
         TouchY.value = withTiming(-SCREEN_HEIGHT * 0.8);
       }
     },
   });
+
   const MoveSlider = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: TouchY.value }],
-      opacity: interpolate(TouchY.value, [-350, -700], [1, 0]),
+      opacity: interpolate(TouchY.value, [1, -150], [1, 0]),
     };
   });
 
@@ -82,7 +91,7 @@ function MyTabs() {
           ),
         },
       ],
-      opacity: interpolate(TouchY.value, [-20, 0, 200], [1, 1, 0]),
+      opacity: interpolate(TouchY.value, [-50, 0, 220], [1, 1, 0]),
     };
   });
 
@@ -255,7 +264,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: h("8%"),
     position: "absolute",
-    bottom: 70,
+    bottom: Platform.OS === "ios" ? 75 : 50,
     left: 0,
     zIndex: 1,
     flexDirection: "row",
@@ -297,7 +306,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: h("100%"),
     position: "absolute",
-    bottom: -SCREEN_HEIGHT / 1.19,
+    bottom: -SCREEN_HEIGHT / 1.2,
     left: 0,
     zIndex: -2,
     alignItems: "center",
